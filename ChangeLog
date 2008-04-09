@@ -1,0 +1,16 @@
+Pro*el ascii exported schematic library to gEDA gschem symbols converter
+
+2008.04.09
+ * remove binary of parser
+ * correct file format and file rights
+ * simplify Makefile
+ + file with authors
+
+2008.04.01
+ + help clear
+
+2008.03.17
+ + successful alpha tests witch personal library
+
+2008.02.01
+ + write code start

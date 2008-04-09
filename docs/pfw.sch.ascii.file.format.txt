@@ -1,0 +1,341 @@
+2008.03.13 19:21
+
+	This file describe structure of ascii pro*el schematic file
+		(ascii file exported from Pro*el 99SE SP6)
+
+    Not all fields are documented bacause this file was wrote from scratch 
+			 wihout any documentation
+
+{{{1 file structure
+line    example and comment in ()
+1:      Protel for Windows - Schematic Library Editor Ascii File Version 1.2 - 2.0
+        (std header - 1 line)
+2:      50                                  (??? bigger for bigger files)
+3:          Organization                    (std header)
+4:          NameOfLibrary                   (name of library)
+5:                                          (??? empty line)
+...                                         (--''--)
+11:                                         (--''--)
+12:         0 0                             (???)
+13:         End                             (std header)
+14:     [Font_Table]                        (std header)
+15:         3                               (number of fonts in this section)
+16:         10 0 0 0 0 0 Times New Roman    (decl. of all fonts in library)
+17:         14 0 0 0 0 0 Arial              (  --''--   )
+...         ...                             (  --''--   )
+N1+1:   EndFont                             (std header)
+N1+2:   Library 0 9 0 1 0 0 15269887 1 10 1 10 1000 800 1 0 (???)
+            2                               (number of components in library)
+        (next starts decl. of all components and parts)
+            Component
+                3                           (number of parts)
+                2                           (number of dif. names for this component)
+                                            (??? empty lines)
+                txt.Description             (short part description ex: 2xEXOR )
+                txt.Footprint.1             (footprint 1)
+                txt.Footprint.2             (footprint 2)
+                txt.Footprint.3             (footprint 3)
+                txt.Footprint.4             (footprint 4)
+                Field.1                      /
+                Field.2                     |  (library fields 1..8
+                Field.3                     |   for component,
+                Field.4                     |   no changed in schematic
+                Field.5                     |
+                Field.6                     |   for example: creator
+                Field.7                     |    licence GPL, etc.)
+                Field.8                      \
+                Default.Designator          (ex: U?, IC?, R?, C?, etc.)
+                Sheet.Part.Filename         (I don't use it for component)
+                COMPONENT_1_NAME1           (name 1 for component)
+                COMPONENT_1_NAME2           (name 2 for component)
+                ...                         (name N for component)
+                Part
+                    0 0                     (???)
+                    ...                     (decl. of primitives: pins, rectangle, ect.)
+                    ...
+                EndNormalPart               (std header)
+                EndDeMorganPart             (std header)
+                EndIEEEPart                 (std header)
+                Part                        (std header)
+                    ...
+                    ...
+                EndNormalPart
+                EndDeMorganPart
+                EndIEEEPart
+            EndComponent                    (std header)
+            Component
+                ...
+                ...
+            EndComponent
+            ...
+        EndLibrary
+        (next starts specific decl. for 2.0 version for Part Fields)
+                        (WE DON'T USE IT)
+        Library Version 2.0
+            Component
+                COMPONENT_2   (name of component - one only for multiname component)
+                PartField.1       /
+                PartField.2      |
+                PartField.3      |
+                PartField.4      |
+                PartField.5      |
+                PartField.6      |
+                PartField.7      |  (name for Part Field 1 .. 16
+                PartField.8      |   - example: price, company, etc.)
+                PartField.9      |
+                PartField 10     |
+                PartField.11     |
+                PartField.12     |
+                PartField.13     |
+                PartField.14     |
+                PartField.15     |
+                PartField.16      \
+            EndComponent
+            Component
+                ...
+            EndComponent
+        EndLibrary              (this is end library declaration)
+}}}1
+
+{{{1 primitives declaration
+================================================================================
+warning 1:
+    primitives decl. have always 2 spaces after type name
+    and 1 spaces between next fields
+
+warning 2:
+    colors are described in BGR conventions in decimal number base
+    example:    full red   =   0x0000ff =      255
+                full green =   0x00ff00 =    65280
+                full blue  =   0xff0000 = 16711680
+
+{{{ Pin
+                       name
+            number -------------   <--- this pin have rotation 0
+                  A                    (rotate is counterclockwise
+                  +-- start point       and have center at the pins name)
+
+    Pin  0 1 4 0 1 1 20 20 20 0 0 '1' '1'
+         | | | | | |  |  |  | | |  |   |
+         | | | | | |  |  |  | | |  |   +----number
+         | | | | | |  |  |  | | |  +------ name
+         | | | | | |  |  |  | | +------- color
+         | | | | | |  |  |  | +------- rotation (0-0; 1-90; 2-180; 3-270;)
+         | | | | | |  |  |  +------- start y
+         | | | | | |  |  +---------- start x
+         | | | | | |  +----------- length
+         | | | | | +------------ number visible (0-no; 1-yes)
+         | | | | +-------------- name visible (0-no ; 1-yes)
+         | | | +-------------- hidden (0-no ; 1-yes)
+         | | +-------------- type (0..7 ; passive, Output, ..; see below)
+         | +-------------- clock symbol (0-no ; 1-yes)
+         +---------------- dot symbol (0-no ; 1-yes)
+
+    pin type:
+         0 -Input
+         1 -IO
+         2 -Output
+         3 -OpenCollector
+         4 -Passive
+         5 -HiZ
+         6 -OpenEmitter
+         7 -Power
+}}}
+
+{{{ Rectangle (box)
+
+    Rectangle  220 10 240 30 0 128 9871 0 1
+                 |  |   |  | |   |    | | |
+                 |  |   |  | |   |    | | +-- filled (0-no; 1-yes)
+                 |  |   |  | |   |    | +---- selected (0-no; 1-yes)
+                 |  |   |  | |   |    +---- fill color
+                 |  |   |  | |   +--------- border color
+                 |  |   |  | +----------- line width 0..3 ( 3-largest)
+                 |  |   |  +----------- y2
+                 |  |   +-------------- x2
+                 |  +------------------ y1
+                 +--------------------- x1
+}}}
+
+{{{ Arc
+                   90
+                   y|
+           180 -----+------ 0
+                    |    x
+                   270
+
+    Arc  70 20 10 0 135.000 315.000 16711680 0
+          |  |  | |       |       |        | |
+          |  |  | |       |       |        | +-- selected (0-no; 1-yes)
+          |  |  | |       |       |        +-- color
+          |  |  | |       |       +--------- end angle
+          |  |  | |       +----------------- start angle
+          |  |  | +----------------------- line width 0..3 ( 3-largest)
+          |  |  +----------------------- radius
+          |  +------------------------ center y
+          +--------------------------- center x
+}}}
+
+{{{ EllipticalArc
+
+    EllipticalArc  40 -50 20 10 2 0.000 270.000 167180 0
+                    |   |  |  | |     |       |      | |
+                    |   |  |  | |     |       |      | +-- selected (0-no; 1-yes)
+                    |   |  |  | |     |       |      +-- color
+                    |   |  |  | |     |       +------- end angle
+                    |   |  |  | |     +--------------- start angle
+                    |   |  |  | +------------------- line width 0..3 ( 3-largest)
+                    |   |  |  +------------------- radius y
+                    |   |  +---------------------- radius x
+                    |   +----------------------- center y
+                    +--------------------------- center x
+}}}
+
+{{{ Ellipse
+
+    Ellipse  100 110 20 10 3 16711 1541320 1 0
+               |   |  |  | |     |       | | |
+               |   |  |  | |     |       | | +------- selected (0-no; 1-yes)
+               |   |  |  | |     |       | +--------- filled (0-no; 1-yes)
+               |   |  |  | |     |       +--------- fill color
+               |   |  |  | |     +----------------- border color
+               |   |  |  | +--------------------- line width 0..3 ( 3-largest)
+               |   |  |  +--------------------- radius y
+               |   |  +------------------------ radius x
+               |   +------------------------- center y
+               +----------------------------- center x
+}}}
+
+{{{ Pie
+
+    Pie  160 70 20 2 90.000 315.000 16711680 12632256 1 0
+           |  |  | |      |       |        |        | | |
+           |  |  | |      |       |        |        | | +-- selected (0-no; 1-yes)
+           |  |  | |      |       |        |        | +---- filled (0-no; 1-yes)
+           |  |  | |      |       |        |        +---- fill color
+           |  |  | |      |       |        +------------- border color
+           |  |  | |      |       +-------------------- end angle
+           |  |  | |      +---------------------------- start angle
+           |  |  | +--------------------------------- line width 0..3 ( 3-largest)
+           |  |  +----------------------------------- radius
+           |  +------------------------------------ center y
+           +--------------------------------------- center x
+}}}
+
+{{{ RoundRectangle
+
+    RoundRectangle  260 160 300 220 20 5 2 6680 1656 0 1
+                      |   |   |   |  | | |    |    | | |
+                      |   |   |   |  | | |    |    | | +-- filled (0-no; 1-yes)
+                      |   |   |   |  | | |    |    | +---- selected (0-no; 1-yes)
+                      |   |   |   |  | | |    |    +---- fill color
+                      |   |   |   |  | | |    +--------- border color
+                      |   |   |   |  | | +------------ line width 0..3 ( 3-largest)
+                      |   |   |   |  | +------------ round radius y
+                      |   |   |   |  +-------------- round radius x
+                      |   |   |   +--------------- y2
+                      |   |   +------------------- x2
+                      |   +----------------------- y1
+                      +--------------------------- x1
+}}}
+
+{{{ Polygon
+
+    Polygon  0 6710 1256 1 0 320 30 340 10 370 30 360 ....
+             |    |    | | |   |  |   |  |   |  |   |
+             |    |    | | |   |  |   |  |   |  |   +-- ..
+             |    |    | | |   |  |   |  |   |  +------ y3
+             |    |    | | |   |  |   |  |   +--------- x3
+             |    |    | | |   |  |   |  +------------- y2
+             |    |    | | |   |  |   +---------------- x2
+             |    |    | | |   |  +-------------------- y1
+             |    |    | | |   +----------------------- x1
+             |    |    | | +------------------------- selected (0-no; 1-yes)
+             |    |    | +------------------------- filled (0-no; 1-yes)
+             |    |    +------------------------- fill color
+             |    +------------------------------ border color
+             +--------------------------------- line width 0..3 ( 3-largest)
+}}}
+
+{{{ Label (text string):
+
+    Label  490 50 1 88608 3 0 'gEDA'
+             |  | |     | | |     |
+             |  | |     | | |     +---- text string
+             |  | |     | | +---------- selected (0-no; 1-yes)
+             |  | |     | +---------- number in font table (1 = first pos.)
+             |  | |     +---------- color
+             |  | +---------------- rotation (counterclockwise 0 -0 .. 3 -270)
+             |  +---------------- y (left bottom corner)
+             +------------------- x (left bottom corner)
+}}}
+
+{{{ Line
+
+    Line  10 110 40 110 1 0 6530 0
+           |   |  |   | | |    | |
+           |   |  |   | | |    | +--- selected (0-no; 1-yes)
+           |   |  |   | | |    +--- color
+           |   |  |   | | +------ line type (0-solid; 1-dashed; 2-dotted)
+           |   |  |   | +------ line width 0..3 ( 3-largest)
+           |   |  |   +------ y2
+           |   |  +---------- x2 
+           |   +----------- y1 
+           +--------------- x1
+}}}
+
+{{{ Polyline
+
+    Polyline  1 0 128 1 3 20 23 302 230 10 40 .. ..
+              | |   | | |  |  |   |   |  |  |  |
+              | |   | | |  |  |   |   |  |  |  +----- ..
+              | |   | | |  |  |   |   |  |  +------ y3
+              | |   | | |  |  |   |   |  +--------- x3
+              | |   | | |  |  |   |   +---------- y2
+              | |   | | |  |  |   +-------------- x2
+              | |   | | |  |  +---------------- y1
+              | |   | | |  +------------------- x1
+              | |   | | +--------------------- number of points (x,y pairs; min 2)
+              | |   | +------------------- selected (0-no; 1-yes)
+              | |   +------------------- color
+              | +--------------------- line type (0-solid; 1-dashed; 2-dotted)
+              +--------------------- line width 0..3 ( 3-largest)
+}}}
+
+{{{ Bezier
+
+    Bezier  0 255 0 4 10 40 30 50 30 50 30 50 ...
+            |  |  | |  |  |  |  |  |  |  |  |
+            |  |  | |  |  |  |  |  |  |  |  +---- y4
+            |  |  | |  |  |  |  |  |  |  +------- x4
+            |  |  | |  |  |  |  |  |  +------- y3
+            |  |  | |  |  |  |  |  +---------- x3
+            |  |  | |  |  |  |  +----------- y2
+            |  |  | |  |  |  +-------------- x2
+            |  |  | |  |  +--------------- y1
+            |  |  | |  +------------------ x1 
+            |  |  | +--------------- number of control points (x,y pairs; min 4)
+            |  |  +--------------- selected (0-no; 1-yes)
+            |  +---------------- color
+            +----------------- line width 0..3 ( 3-largest)
+
+}}}
+
+{{{ Image
+
+    Image  50 10 280 70 2 345 0 0 1 'Y:\jack.bmp'
+            |  |  |   | |   | | | |            |
+            |  |  |   | |   | | | |            +-- path to bmp
+            |  |  |   | |   | | | +------------- ratio 1:1 (0-no; 1-yes)
+            |  |  |   | |   | | +------------- border visible (0-no; 1-yes)
+            |  |  |   | |   | +------------- selected (0-no; 1-yes)
+            |  |  |   | |   +------------- border color
+            |  |  |   | +--------------- border line width 0..3 ( 3-largest)
+            |  |  |   +--------------- y2
+            |  |  +------------------- x2
+            |  +-------------------- y1
+            +----------------------- x1
+
+}}}
+
+}}}1
